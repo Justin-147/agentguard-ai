@@ -1,5 +1,6 @@
-# AgentGuard AI
+﻿# AgentGuard AI
 
+[![Release](https://img.shields.io/github/v/release/Justin-147/agentguard-ai?label=release)](https://github.com/Justin-147/agentguard-ai/releases)
 [![tests](https://github.com/Justin-147/agentguard-ai/actions/workflows/tests.yml/badge.svg)](https://github.com/Justin-147/agentguard-ai/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml)
@@ -102,3 +103,4 @@ python scripts/run_demo.py
 ## Disclaimer
 
 AgentGuard AI is a portfolio prototype. It does not provide legal, compliance, financial, investment, or security certification advice.
+
