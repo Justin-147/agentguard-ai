@@ -1,0 +1,129 @@
+{
+  "id": "high_risk_autonomous_agent",
+  "name": "High Risk Autonomous Agent",
+  "description": "A deliberately high-risk autonomous workflow that can message customers, call external APIs, trigger financial transactions, store sensitive memory, and act without approval.",
+  "business_domain": "financial services",
+  "agent_type": "autonomous_agent",
+  "tools": [
+    {
+      "name": "customer_email_sender",
+      "tool_type": "email",
+      "description": "Sends external messages to customers.",
+      "permissions": ["send_external_email"],
+      "can_read": false,
+      "can_write": false,
+      "can_execute": false,
+      "can_send_external_message": true,
+      "can_trigger_financial_action": false,
+      "requires_approval": false
+    },
+    {
+      "name": "external_api_caller",
+      "tool_type": "api",
+      "description": "Calls third-party APIs with customer and account context.",
+      "permissions": ["call_external_api", "read_customer_data"],
+      "can_read": true,
+      "can_write": false,
+      "can_execute": true,
+      "can_send_external_message": false,
+      "can_trigger_financial_action": false,
+      "requires_approval": false
+    },
+    {
+      "name": "transaction_executor",
+      "tool_type": "transaction",
+      "description": "Triggers customer-impacting financial actions.",
+      "permissions": ["execute_transaction", "admin_transaction"],
+      "can_read": true,
+      "can_write": true,
+      "can_execute": true,
+      "can_send_external_message": false,
+      "can_trigger_financial_action": true,
+      "requires_approval": false
+    }
+  ],
+  "data_access": [
+    {
+      "data_category": "customer_identity",
+      "sensitivity": "personal",
+      "purpose": "Personalize autonomous decisions.",
+      "retention_policy_declared": false,
+      "pii_redaction": false,
+      "encryption_required": false
+    },
+    {
+      "data_category": "account_balances",
+      "sensitivity": "financial",
+      "purpose": "Decide whether to trigger transactions.",
+      "retention_policy_declared": false,
+      "pii_redaction": false,
+      "encryption_required": false
+    },
+    {
+      "data_category": "regulated_records",
+      "sensitivity": "regulated",
+      "purpose": "Support autonomous financial workflow execution.",
+      "retention_policy_declared": false,
+      "pii_redaction": false,
+      "encryption_required": false
+    }
+  ],
+  "external_actions": [
+    {
+      "action_type": "email",
+      "description": "Send external customer messages.",
+      "requires_human_approval": false,
+      "reversible": false,
+      "business_impact": "high"
+    },
+    {
+      "action_type": "api_call",
+      "description": "Call a third-party API with account context.",
+      "requires_human_approval": false,
+      "reversible": false,
+      "business_impact": "high"
+    },
+    {
+      "action_type": "transaction",
+      "description": "Trigger a customer-impacting financial transaction.",
+      "requires_human_approval": false,
+      "reversible": false,
+      "business_impact": "high"
+    }
+  ],
+  "human_oversight": {
+    "human_in_the_loop": false,
+    "approval_required_for_high_risk_actions": false,
+    "review_frequency": "none",
+    "escalation_path_defined": false
+  },
+  "logging": {
+    "tool_call_logging": false,
+    "input_output_logging": false,
+    "decision_trace": false,
+    "retention_days": null,
+    "audit_export_available": false
+  },
+  "memory": {
+    "uses_memory": true,
+    "memory_type": "long_term",
+    "contains_sensitive_data": true,
+    "expiration_policy": false,
+    "user_deletion_supported": false
+  },
+  "evaluation": {
+    "pre_deployment_tests": false,
+    "ongoing_monitoring": false,
+    "red_team_testing": false,
+    "hallucination_tests": false,
+    "prompt_injection_tests": false,
+    "fallback_tests": false
+  },
+  "deployment": {
+    "environment": "customer_facing",
+    "rate_limits": false,
+    "secrets_management": false,
+    "incident_response_plan": false,
+    "rollback_plan": false
+  }
+}

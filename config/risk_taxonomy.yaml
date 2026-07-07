@@ -1,0 +1,44 @@
+risk_tags:
+  tool_permission_risk:
+    description: "Agent has broad or dangerous tool permissions."
+    keywords: ["execute", "write", "send", "delete", "admin", "external"]
+
+  external_action_risk:
+    description: "Agent can take outward-facing or business-impacting actions."
+    keywords: ["email", "api_call", "transaction", "ticket", "file_write"]
+
+  data_privacy_risk:
+    description: "Agent accesses sensitive, personal, financial, or regulated data."
+    keywords: ["personal", "financial", "confidential", "regulated", "pii"]
+
+  model_risk:
+    description: "Agent output may be unreliable, hallucinated, or insufficiently validated."
+    keywords: ["hallucination", "evaluation", "validation", "fallback"]
+
+  prompt_injection_risk:
+    description: "Agent may be vulnerable to malicious or indirect prompt injection."
+    keywords: ["prompt", "injection", "untrusted", "web", "email"]
+
+  auditability_gap:
+    description: "Insufficient traceability, logging, or audit export."
+    keywords: ["logging", "trace", "audit", "retention"]
+
+  human_oversight_gap:
+    description: "Missing human review or approval for high-risk actions."
+    keywords: ["approval", "human", "review", "escalation"]
+
+  operational_risk:
+    description: "Insufficient operational resilience, fallback, rollback, or incident response."
+    keywords: ["incident", "rollback", "fallback", "monitoring"]
+
+  cybersecurity_risk:
+    description: "Secrets, access control, phishing, or privileged action risk."
+    keywords: ["secret", "token", "credential", "access", "privileged"]
+
+  regulatory_risk:
+    description: "Potential exposure to regulated business processes or compliance requirements."
+    keywords: ["regulated", "compliance", "financial", "customer", "record"]
+
+  third_party_risk:
+    description: "Dependence on external providers, APIs, or vendors."
+    keywords: ["vendor", "third-party", "api", "external"]

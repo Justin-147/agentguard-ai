@@ -1,0 +1,87 @@
+{
+  "id": "financial_advisor_copilot",
+  "name": "Financial Advisor Copilot",
+  "description": "Assists relationship managers by summarizing customer profiles and portfolio notes. It cannot place trades or send external messages.",
+  "business_domain": "wealth management",
+  "agent_type": "advisor_copilot",
+  "tools": [
+    {
+      "name": "customer_profile_reader",
+      "tool_type": "database",
+      "description": "Reads approved customer profile fields from an internal CRM.",
+      "permissions": ["read_customer_profile"],
+      "can_read": true,
+      "can_write": false,
+      "can_execute": false,
+      "can_send_external_message": false,
+      "can_trigger_financial_action": false,
+      "requires_approval": true
+    },
+    {
+      "name": "portfolio_note_summarizer",
+      "tool_type": "document_reader",
+      "description": "Reads and summarizes internal portfolio review notes.",
+      "permissions": ["read_portfolio_notes"],
+      "can_read": true,
+      "can_write": false,
+      "can_execute": false,
+      "can_send_external_message": false,
+      "can_trigger_financial_action": false,
+      "requires_approval": true
+    }
+  ],
+  "data_access": [
+    {
+      "data_category": "customer_profile",
+      "sensitivity": "personal",
+      "purpose": "Summarize client context for advisor review.",
+      "retention_policy_declared": false,
+      "pii_redaction": false,
+      "encryption_required": true
+    },
+    {
+      "data_category": "portfolio_notes",
+      "sensitivity": "financial",
+      "purpose": "Summarize investment history and portfolio commentary for human review.",
+      "retention_policy_declared": false,
+      "pii_redaction": false,
+      "encryption_required": true
+    }
+  ],
+  "external_actions": [],
+  "human_oversight": {
+    "human_in_the_loop": true,
+    "approval_required_for_high_risk_actions": true,
+    "review_frequency": "every_action",
+    "escalation_path_defined": true
+  },
+  "logging": {
+    "tool_call_logging": true,
+    "input_output_logging": true,
+    "decision_trace": true,
+    "retention_days": 365,
+    "audit_export_available": true
+  },
+  "memory": {
+    "uses_memory": false,
+    "memory_type": "none",
+    "contains_sensitive_data": false,
+    "expiration_policy": true,
+    "user_deletion_supported": true
+  },
+  "evaluation": {
+    "pre_deployment_tests": true,
+    "ongoing_monitoring": true,
+    "red_team_testing": false,
+    "hallucination_tests": false,
+    "prompt_injection_tests": true,
+    "fallback_tests": true
+  },
+  "deployment": {
+    "environment": "internal",
+    "rate_limits": true,
+    "secrets_management": true,
+    "incident_response_plan": true,
+    "rollback_plan": true
+  }
+}

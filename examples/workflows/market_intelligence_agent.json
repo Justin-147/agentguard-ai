@@ -1,0 +1,79 @@
+{
+  "id": "market_intelligence_agent",
+  "name": "Market Intelligence Agent",
+  "description": "Reads public web sources and generates internal market intelligence summaries with source links.",
+  "business_domain": "market research",
+  "agent_type": "research_assistant",
+  "tools": [
+    {
+      "name": "public_web_reader",
+      "tool_type": "web_reader",
+      "description": "Reads public web pages and public company news.",
+      "permissions": ["read_public_web"],
+      "can_read": true,
+      "can_write": false,
+      "can_execute": false,
+      "can_send_external_message": false,
+      "can_trigger_financial_action": false,
+      "requires_approval": false
+    },
+    {
+      "name": "report_generator",
+      "tool_type": "reporting",
+      "description": "Generates an internal markdown report with citations.",
+      "permissions": ["write_local_report"],
+      "can_read": false,
+      "can_write": true,
+      "can_execute": false,
+      "can_send_external_message": false,
+      "can_trigger_financial_action": false,
+      "requires_approval": true
+    }
+  ],
+  "data_access": [
+    {
+      "data_category": "public_market_news",
+      "sensitivity": "public",
+      "purpose": "Create market summary reports.",
+      "retention_policy_declared": true,
+      "pii_redaction": true,
+      "encryption_required": false
+    }
+  ],
+  "external_actions": [],
+  "human_oversight": {
+    "human_in_the_loop": true,
+    "approval_required_for_high_risk_actions": true,
+    "review_frequency": "weekly",
+    "escalation_path_defined": true
+  },
+  "logging": {
+    "tool_call_logging": true,
+    "input_output_logging": true,
+    "decision_trace": false,
+    "retention_days": 180,
+    "audit_export_available": true
+  },
+  "memory": {
+    "uses_memory": false,
+    "memory_type": "none",
+    "contains_sensitive_data": false,
+    "expiration_policy": true,
+    "user_deletion_supported": true
+  },
+  "evaluation": {
+    "pre_deployment_tests": true,
+    "ongoing_monitoring": true,
+    "red_team_testing": false,
+    "hallucination_tests": false,
+    "prompt_injection_tests": true,
+    "fallback_tests": true
+  },
+  "deployment": {
+    "environment": "internal",
+    "rate_limits": true,
+    "secrets_management": true,
+    "incident_response_plan": true,
+    "rollback_plan": true
+  }
+}

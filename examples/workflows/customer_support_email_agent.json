@@ -1,0 +1,87 @@
+{
+  "id": "customer_support_email_agent",
+  "name": "Customer Support Email Agent",
+  "description": "Reads customer support tickets, drafts responses, and can send approved-looking outbound emails to customers.",
+  "business_domain": "customer support",
+  "agent_type": "email_agent",
+  "tools": [
+    {
+      "name": "ticket_reader",
+      "tool_type": "ticketing_system",
+      "description": "Reads customer messages and ticket history from the support queue.",
+      "permissions": ["read_customer_tickets"],
+      "can_read": true,
+      "can_write": false,
+      "can_execute": false,
+      "can_send_external_message": false,
+      "can_trigger_financial_action": false,
+      "requires_approval": true
+    },
+    {
+      "name": "email_sender",
+      "tool_type": "email",
+      "description": "Sends response emails to customers using ticket context.",
+      "permissions": ["send_customer_email"],
+      "can_read": false,
+      "can_write": false,
+      "can_execute": false,
+      "can_send_external_message": true,
+      "can_trigger_financial_action": false,
+      "requires_approval": false
+    }
+  ],
+  "data_access": [
+    {
+      "data_category": "customer_messages",
+      "sensitivity": "personal",
+      "purpose": "Resolve customer support requests.",
+      "retention_policy_declared": true,
+      "pii_redaction": false,
+      "encryption_required": true
+    }
+  ],
+  "external_actions": [
+    {
+      "action_type": "email",
+      "description": "Send a response email to the customer.",
+      "requires_human_approval": false,
+      "reversible": false,
+      "business_impact": "medium"
+    }
+  ],
+  "human_oversight": {
+    "human_in_the_loop": true,
+    "approval_required_for_high_risk_actions": false,
+    "review_frequency": "sample",
+    "escalation_path_defined": true
+  },
+  "logging": {
+    "tool_call_logging": true,
+    "input_output_logging": true,
+    "decision_trace": false,
+    "retention_days": 180,
+    "audit_export_available": true
+  },
+  "memory": {
+    "uses_memory": true,
+    "memory_type": "short_term",
+    "contains_sensitive_data": false,
+    "expiration_policy": true,
+    "user_deletion_supported": true
+  },
+  "evaluation": {
+    "pre_deployment_tests": true,
+    "ongoing_monitoring": true,
+    "red_team_testing": false,
+    "hallucination_tests": false,
+    "prompt_injection_tests": false,
+    "fallback_tests": true
+  },
+  "deployment": {
+    "environment": "customer_facing",
+    "rate_limits": true,
+    "secrets_management": true,
+    "incident_response_plan": true,
+    "rollback_plan": true
+  }
+}

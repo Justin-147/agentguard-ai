@@ -1,0 +1,99 @@
+{
+  "id": "developer_code_agent",
+  "name": "Developer Code Agent",
+  "description": "Assists developers by reading project files, editing source code, and executing local tests.",
+  "business_domain": "software engineering",
+  "agent_type": "coding_agent",
+  "tools": [
+    {
+      "name": "workspace_reader",
+      "tool_type": "filesystem",
+      "description": "Reads source code and test files from the local workspace.",
+      "permissions": ["read_workspace"],
+      "can_read": true,
+      "can_write": false,
+      "can_execute": false,
+      "can_send_external_message": false,
+      "can_trigger_financial_action": false,
+      "requires_approval": false
+    },
+    {
+      "name": "file_writer",
+      "tool_type": "filesystem",
+      "description": "Writes code and test files inside the local workspace.",
+      "permissions": ["write_workspace"],
+      "can_read": false,
+      "can_write": true,
+      "can_execute": false,
+      "can_send_external_message": false,
+      "can_trigger_financial_action": false,
+      "requires_approval": false
+    },
+    {
+      "name": "test_runner",
+      "tool_type": "shell",
+      "description": "Executes local test commands in the development environment.",
+      "permissions": ["execute_tests"],
+      "can_read": false,
+      "can_write": false,
+      "can_execute": true,
+      "can_send_external_message": false,
+      "can_trigger_financial_action": false,
+      "requires_approval": false
+    }
+  ],
+  "data_access": [
+    {
+      "data_category": "source_code",
+      "sensitivity": "internal",
+      "purpose": "Suggest and validate local code changes.",
+      "retention_policy_declared": true,
+      "pii_redaction": true,
+      "encryption_required": false
+    }
+  ],
+  "external_actions": [
+    {
+      "action_type": "file_write",
+      "description": "Write source code changes into the local repository.",
+      "requires_human_approval": false,
+      "reversible": true,
+      "business_impact": "low"
+    }
+  ],
+  "human_oversight": {
+    "human_in_the_loop": true,
+    "approval_required_for_high_risk_actions": false,
+    "review_frequency": "sample",
+    "escalation_path_defined": true
+  },
+  "logging": {
+    "tool_call_logging": true,
+    "input_output_logging": true,
+    "decision_trace": true,
+    "retention_days": 90,
+    "audit_export_available": true
+  },
+  "memory": {
+    "uses_memory": false,
+    "memory_type": "none",
+    "contains_sensitive_data": false,
+    "expiration_policy": true,
+    "user_deletion_supported": true
+  },
+  "evaluation": {
+    "pre_deployment_tests": true,
+    "ongoing_monitoring": false,
+    "red_team_testing": false,
+    "hallucination_tests": false,
+    "prompt_injection_tests": true,
+    "fallback_tests": false
+  },
+  "deployment": {
+    "environment": "local",
+    "rate_limits": true,
+    "secrets_management": true,
+    "incident_response_plan": false,
+    "rollback_plan": true
+  }
+}

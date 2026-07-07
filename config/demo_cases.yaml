@@ -1,0 +1,30 @@
+demo_cases:
+  financial_advisor_copilot:
+    title: "Financial Advisor Copilot"
+    path: "examples/workflows/financial_advisor_copilot.json"
+    expected_risk: "Medium"
+    summary: "A wealth management assistant that summarizes customer profile and portfolio notes without autonomous trading."
+
+  customer_support_email_agent:
+    title: "Customer Support Email Agent"
+    path: "examples/workflows/customer_support_email_agent.json"
+    expected_risk: "High"
+    summary: "A support agent that can draft and send customer emails while handling personal ticket data."
+
+  market_intelligence_agent:
+    title: "Market Intelligence Agent"
+    path: "examples/workflows/market_intelligence_agent.json"
+    expected_risk: "Medium"
+    summary: "A research assistant that uses public information and produces internal market briefings."
+
+  developer_code_agent:
+    title: "Developer Code Agent"
+    path: "examples/workflows/developer_code_agent.json"
+    expected_risk: "High"
+    summary: "A coding assistant that can write files and execute tests in a local development workspace."
+
+  high_risk_autonomous_agent:
+    title: "High Risk Autonomous Agent"
+    path: "examples/workflows/high_risk_autonomous_agent.json"
+    expected_risk: "Critical"
+    summary: "A deliberately risky autonomous agent with external actions, transaction capability, sensitive data, weak logging, and no approval gates."

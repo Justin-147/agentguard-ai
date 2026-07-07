@@ -1,0 +1,104 @@
+{
+  "workflow_id": "financial_advisor_copilot",
+  "workflow_name": "Financial Advisor Copilot",
+  "overall_risk_level": "Medium",
+  "overall_score": 0.49,
+  "findings": [
+    {
+      "id": "AGF-001",
+      "risk_tag": "data_privacy_risk",
+      "title": "Sensitive data controls are incomplete",
+      "description": "Sensitive data processing lacks one or more basic privacy controls.",
+      "severity": "medium",
+      "likelihood": "high",
+      "risk_score": 0.605,
+      "affected_component": "data_access:customer_profile",
+      "evidence": [
+        "Data category 'customer_profile' is marked 'personal'.",
+        "Missing: retention policy, PII redaction."
+      ],
+      "recommended_controls": [
+        "pii_redaction",
+        "retention_policy"
+      ]
+    },
+    {
+      "id": "AGF-002",
+      "risk_tag": "data_privacy_risk",
+      "title": "Sensitive data controls are incomplete",
+      "description": "Sensitive data processing lacks one or more basic privacy controls.",
+      "severity": "medium",
+      "likelihood": "high",
+      "risk_score": 0.605,
+      "affected_component": "data_access:portfolio_notes",
+      "evidence": [
+        "Data category 'portfolio_notes' is marked 'financial'.",
+        "Missing: retention policy, PII redaction."
+      ],
+      "recommended_controls": [
+        "pii_redaction",
+        "retention_policy"
+      ]
+    },
+    {
+      "id": "AGF-003",
+      "risk_tag": "regulatory_risk",
+      "title": "Regulated or financial data exposure",
+      "description": "Financial or regulated data increases the need for controlled records, monitoring, and review.",
+      "severity": "medium",
+      "likelihood": "low",
+      "risk_score": 0.4125,
+      "affected_component": "data_access:portfolio_notes",
+      "evidence": [
+        "Data sensitivity is 'financial'.",
+        "Privacy controls missing: retention policy, PII redaction."
+      ],
+      "recommended_controls": []
+    },
+    {
+      "id": "AGF-004",
+      "risk_tag": "model_risk",
+      "title": "Model evaluation coverage is incomplete",
+      "description": "The workflow has missing model quality, hallucination, monitoring, or fallback checks.",
+      "severity": "low",
+      "likelihood": "medium",
+      "risk_score": 0.3375,
+      "affected_component": "evaluation",
+      "evidence": [
+        "Missing evaluation control: hallucination tests."
+      ],
+      "recommended_controls": [
+        "evaluation_suite",
+        "fallback_procedure",
+        "source_attribution"
+      ]
+    }
+  ],
+  "control_gaps": [
+    "pii_redaction",
+    "retention_policy",
+    "evaluation_suite",
+    "fallback_procedure",
+    "source_attribution"
+  ],
+  "strengths": [
+    "Human-in-the-loop review is enabled.",
+    "High-risk actions require approval.",
+    "Tool-call logging is enabled.",
+    "Audit export is available.",
+    "Pre-deployment tests are defined.",
+    "Ongoing monitoring is enabled.",
+    "Secrets management is declared.",
+    "Incident response planning is declared.",
+    "No external actions are configured."
+  ],
+  "recommendations": [
+    "Classify sensitive input fields, redact personal data where possible, and document retention for each data category.",
+    "Redact or mask personal and financial identifiers before model processing or long-term storage.",
+    "Define and enforce a retention policy for inputs, outputs, logs, and memory records.",
+    "Run a task-specific evaluation suite covering hallucination, regression, and answer-quality checks before release.",
+    "Define fallback behavior for low-confidence outputs, tool failures, and missing evidence.",
+    "Require source attribution for factual claims in generated reports or customer-facing content."
+  ],
+  "generated_at": "2026-07-06T07:20:12.997880Z"
+}
