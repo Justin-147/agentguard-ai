@@ -1,0 +1,85 @@
+{
+  "workflow_id": "market_intelligence_agent",
+  "workflow_name": "Market Intelligence Agent",
+  "overall_risk_level": "Medium",
+  "overall_score": 0.4333,
+  "findings": [
+    {
+      "id": "AGF-001",
+      "rule_id": "AG-RULE-AUDIT-001",
+      "risk_tag": "auditability_gap",
+      "title": "Audit trail is incomplete",
+      "description": "The workflow may be difficult to investigate, replay, or evidence during governance review.",
+      "severity": "medium",
+      "likelihood": "medium",
+      "risk_score": 0.5,
+      "affected_component": "logging",
+      "evidence": [
+        "Missing audit feature: decision trace."
+      ],
+      "recommended_controls": [
+        "tool_call_audit_log",
+        "retention_policy",
+        "source_attribution",
+        "model_card",
+        "data_lineage"
+      ],
+      "framework_refs": [
+        "NIST-AI-RMF-GOVERN"
+      ]
+    },
+    {
+      "id": "AGF-002",
+      "rule_id": "AG-RULE-MODEL-001",
+      "risk_tag": "model_risk",
+      "title": "Model evaluation coverage is incomplete",
+      "description": "The workflow has missing model quality, red-team, hallucination, monitoring, or fallback checks.",
+      "severity": "medium",
+      "likelihood": "medium",
+      "risk_score": 0.5,
+      "affected_component": "evaluation",
+      "evidence": [
+        "Missing evaluation control: red-team tests for agent/tool abuse.",
+        "Missing evaluation control: hallucination tests."
+      ],
+      "recommended_controls": [
+        "evaluation_suite",
+        "model_card",
+        "red_team_program",
+        "fallback_procedure",
+        "source_attribution"
+      ],
+      "framework_refs": [
+        "NIST-AI-RMF-MEASURE"
+      ]
+    }
+  ],
+  "control_gaps": [
+    "evaluation_suite",
+    "red_team_program"
+  ],
+  "strengths": [
+    "Human-in-the-loop review is enabled.",
+    "High-risk actions require approval.",
+    "Tool-call logging is enabled.",
+    "Audit export is available.",
+    "Pre-deployment tests are defined.",
+    "Ongoing monitoring is enabled.",
+    "Secrets management is declared.",
+    "Incident response planning is declared.",
+    "No external actions are configured."
+  ],
+  "recommendations": [
+    "Make assessment replay possible by retaining tool-call logs, decision traces, and exportable audit records.",
+    "Run a task-specific evaluation suite covering hallucination, regression, and answer-quality checks before release.",
+    "Run structured red-team tests for prompt injection, data leakage, and tool misuse."
+  ],
+  "score_explanation": {
+    "max_finding_score": 0.5,
+    "mean_top_5_score": 0.5,
+    "control_gap_density": 0.1667,
+    "weighted_score": 0.4333,
+    "override_applied": "none"
+  },
+  "generated_at": "2026-07-06T01:00:00"
+}

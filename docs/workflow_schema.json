@@ -1,0 +1,411 @@
+{
+  "$defs": {
+    "DataAccessSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "data_category": {
+          "minLength": 1,
+          "title": "Data Category",
+          "type": "string"
+        },
+        "sensitivity": {
+          "title": "Sensitivity",
+          "type": "string"
+        },
+        "purpose": {
+          "minLength": 1,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "retention_policy_declared": {
+          "title": "Retention Policy Declared",
+          "type": "boolean"
+        },
+        "pii_redaction": {
+          "title": "Pii Redaction",
+          "type": "boolean"
+        },
+        "encryption_required": {
+          "title": "Encryption Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "data_category",
+        "sensitivity",
+        "purpose",
+        "retention_policy_declared",
+        "pii_redaction",
+        "encryption_required"
+      ],
+      "title": "DataAccessSpec",
+      "type": "object"
+    },
+    "DeploymentSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "environment": {
+          "title": "Environment",
+          "type": "string"
+        },
+        "rate_limits": {
+          "title": "Rate Limits",
+          "type": "boolean"
+        },
+        "secrets_management": {
+          "title": "Secrets Management",
+          "type": "boolean"
+        },
+        "incident_response_plan": {
+          "title": "Incident Response Plan",
+          "type": "boolean"
+        },
+        "rollback_plan": {
+          "title": "Rollback Plan",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "environment",
+        "rate_limits",
+        "secrets_management",
+        "incident_response_plan",
+        "rollback_plan"
+      ],
+      "title": "DeploymentSpec",
+      "type": "object"
+    },
+    "EvaluationSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "pre_deployment_tests": {
+          "title": "Pre Deployment Tests",
+          "type": "boolean"
+        },
+        "ongoing_monitoring": {
+          "title": "Ongoing Monitoring",
+          "type": "boolean"
+        },
+        "red_team_testing": {
+          "title": "Red Team Testing",
+          "type": "boolean"
+        },
+        "hallucination_tests": {
+          "title": "Hallucination Tests",
+          "type": "boolean"
+        },
+        "prompt_injection_tests": {
+          "title": "Prompt Injection Tests",
+          "type": "boolean"
+        },
+        "fallback_tests": {
+          "title": "Fallback Tests",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "pre_deployment_tests",
+        "ongoing_monitoring",
+        "red_team_testing",
+        "hallucination_tests",
+        "prompt_injection_tests",
+        "fallback_tests"
+      ],
+      "title": "EvaluationSpec",
+      "type": "object"
+    },
+    "ExternalActionSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "action_type": {
+          "minLength": 1,
+          "title": "Action Type",
+          "type": "string"
+        },
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "requires_human_approval": {
+          "title": "Requires Human Approval",
+          "type": "boolean"
+        },
+        "reversible": {
+          "title": "Reversible",
+          "type": "boolean"
+        },
+        "business_impact": {
+          "title": "Business Impact",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_type",
+        "description",
+        "requires_human_approval",
+        "reversible",
+        "business_impact"
+      ],
+      "title": "ExternalActionSpec",
+      "type": "object"
+    },
+    "HumanOversightSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "human_in_the_loop": {
+          "title": "Human In The Loop",
+          "type": "boolean"
+        },
+        "approval_required_for_high_risk_actions": {
+          "title": "Approval Required For High Risk Actions",
+          "type": "boolean"
+        },
+        "review_frequency": {
+          "title": "Review Frequency",
+          "type": "string"
+        },
+        "escalation_path_defined": {
+          "title": "Escalation Path Defined",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "human_in_the_loop",
+        "approval_required_for_high_risk_actions",
+        "review_frequency",
+        "escalation_path_defined"
+      ],
+      "title": "HumanOversightSpec",
+      "type": "object"
+    },
+    "LoggingSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "tool_call_logging": {
+          "title": "Tool Call Logging",
+          "type": "boolean"
+        },
+        "input_output_logging": {
+          "title": "Input Output Logging",
+          "type": "boolean"
+        },
+        "decision_trace": {
+          "title": "Decision Trace",
+          "type": "boolean"
+        },
+        "retention_days": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retention Days"
+        },
+        "audit_export_available": {
+          "title": "Audit Export Available",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "tool_call_logging",
+        "input_output_logging",
+        "decision_trace",
+        "audit_export_available"
+      ],
+      "title": "LoggingSpec",
+      "type": "object"
+    },
+    "MemorySpec": {
+      "additionalProperties": false,
+      "properties": {
+        "uses_memory": {
+          "title": "Uses Memory",
+          "type": "boolean"
+        },
+        "memory_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Memory Type"
+        },
+        "contains_sensitive_data": {
+          "title": "Contains Sensitive Data",
+          "type": "boolean"
+        },
+        "expiration_policy": {
+          "title": "Expiration Policy",
+          "type": "boolean"
+        },
+        "user_deletion_supported": {
+          "title": "User Deletion Supported",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "uses_memory",
+        "memory_type",
+        "contains_sensitive_data",
+        "expiration_policy",
+        "user_deletion_supported"
+      ],
+      "title": "MemorySpec",
+      "type": "object"
+    },
+    "ToolSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "tool_type": {
+          "minLength": 1,
+          "title": "Tool Type",
+          "type": "string"
+        },
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "permissions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Permissions",
+          "type": "array"
+        },
+        "can_read": {
+          "default": false,
+          "title": "Can Read",
+          "type": "boolean"
+        },
+        "can_write": {
+          "default": false,
+          "title": "Can Write",
+          "type": "boolean"
+        },
+        "can_execute": {
+          "default": false,
+          "title": "Can Execute",
+          "type": "boolean"
+        },
+        "can_send_external_message": {
+          "default": false,
+          "title": "Can Send External Message",
+          "type": "boolean"
+        },
+        "can_trigger_financial_action": {
+          "default": false,
+          "title": "Can Trigger Financial Action",
+          "type": "boolean"
+        },
+        "requires_approval": {
+          "default": false,
+          "title": "Requires Approval",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "tool_type",
+        "description"
+      ],
+      "title": "ToolSpec",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "minLength": 1,
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "description": {
+      "minLength": 1,
+      "title": "Description",
+      "type": "string"
+    },
+    "business_domain": {
+      "minLength": 1,
+      "title": "Business Domain",
+      "type": "string"
+    },
+    "agent_type": {
+      "minLength": 1,
+      "title": "Agent Type",
+      "type": "string"
+    },
+    "tools": {
+      "items": {
+        "$ref": "#/$defs/ToolSpec"
+      },
+      "title": "Tools",
+      "type": "array"
+    },
+    "data_access": {
+      "items": {
+        "$ref": "#/$defs/DataAccessSpec"
+      },
+      "title": "Data Access",
+      "type": "array"
+    },
+    "external_actions": {
+      "items": {
+        "$ref": "#/$defs/ExternalActionSpec"
+      },
+      "title": "External Actions",
+      "type": "array"
+    },
+    "human_oversight": {
+      "$ref": "#/$defs/HumanOversightSpec"
+    },
+    "logging": {
+      "$ref": "#/$defs/LoggingSpec"
+    },
+    "memory": {
+      "$ref": "#/$defs/MemorySpec"
+    },
+    "evaluation": {
+      "$ref": "#/$defs/EvaluationSpec"
+    },
+    "deployment": {
+      "$ref": "#/$defs/DeploymentSpec"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "description",
+    "business_domain",
+    "agent_type",
+    "tools",
+    "data_access",
+    "external_actions",
+    "human_oversight",
+    "logging",
+    "memory",
+    "evaluation",
+    "deployment"
+  ],
+  "title": "AgentWorkflow",
+  "type": "object"
+}

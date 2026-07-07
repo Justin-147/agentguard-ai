@@ -1,0 +1,39 @@
+frameworks:
+  OWASP-LLM01-2025:
+    name: Prompt Injection
+    risk_tags:
+      - prompt_injection_risk
+
+  OWASP-LLM02-2025:
+    name: Sensitive Information Disclosure
+    risk_tags:
+      - data_privacy_risk
+
+  OWASP-LLM06-2025:
+    name: Excessive Agency
+    risk_tags:
+      - tool_permission_risk
+      - external_action_risk
+
+  NIST-AI-RMF-GOVERN:
+    name: Govern
+    risk_tags:
+      - auditability_gap
+      - human_oversight_gap
+
+  NIST-AI-RMF-MAP:
+    name: Map
+    risk_tags:
+      - data_privacy_risk
+      - third_party_risk
+
+  NIST-AI-RMF-MEASURE:
+    name: Measure
+    risk_tags:
+      - model_risk
+
+  NIST-AI-RMF-MANAGE:
+    name: Manage
+    risk_tags:
+      - operational_risk
+      - cybersecurity_risk

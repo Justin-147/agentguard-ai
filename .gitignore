@@ -6,6 +6,11 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 *.egg-info/
+.tmp/
+dist/
+build/
+coverage.xml
+htmlcov/
 reports/json/
 reports/markdown/
 reports/html/

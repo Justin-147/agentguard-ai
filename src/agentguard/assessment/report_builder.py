@@ -2,13 +2,21 @@
 
 from __future__ import annotations
 
+import html
 from pathlib import Path
 
 import markdown as markdown_lib
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from agentguard.config import report_template_path, reports_dir
+from agentguard.assessment.control_mapper import control_descriptions_for_finding
+from agentguard.config import (
+    load_control_library,
+    load_framework_mapping,
+    report_template_path,
+    reports_dir,
+)
 from agentguard.models import AgentWorkflow, AssessmentResult
+from agentguard.writers.formatting import fmt_score, md_cell, safe_text
 from agentguard.writers.html_writer import write_html_report
 from agentguard.writers.json_writer import write_json_report
 from agentguard.writers.markdown_writer import write_markdown_report
@@ -22,6 +30,9 @@ def build_markdown_report(workflow: AgentWorkflow, result: AssessmentResult) -> 
         trim_blocks=True,
         lstrip_blocks=True,
     )
+    env.filters["md_cell"] = md_cell
+    env.filters["safe_text"] = safe_text
+    env.filters["fmt_score"] = fmt_score
     template = env.get_template(template_path.name)
     ranked_findings = sorted(result.findings, key=lambda item: item.risk_score, reverse=True)
     top_risk_drivers: list[str] = []
@@ -34,6 +45,14 @@ def build_markdown_report(workflow: AgentWorkflow, result: AssessmentResult) -> 
         f"{access.data_category} ({access.sensitivity})"
         for access in workflow.data_access
     ]
+    control_library = {
+        control_id: control.get("description", "")
+        for control_id, control in load_control_library().get("controls", {}).items()
+    }
+    framework_mapping = load_framework_mapping().get("frameworks", {})
+    control_descriptions = {
+        finding.id: control_descriptions_for_finding(finding) for finding in result.findings
+    }
     return template.render(
         workflow=workflow,
         result=result,
@@ -41,17 +60,21 @@ def build_markdown_report(workflow: AgentWorkflow, result: AssessmentResult) -> 
         urgent_control_gaps=result.control_gaps[:5],
         data_categories=data_categories,
         generated_at=result.generated_at.isoformat(),
+        control_descriptions=control_descriptions,
+        control_library=control_library,
+        framework_mapping=framework_mapping,
     )
 
 
 def build_html_report(markdown_text: str, title: str) -> str:
+    safe_title = html.escape(title, quote=True)
     body = markdown_lib.markdown(markdown_text, extensions=["tables", "toc"])
     return f"""<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{title}</title>
+  <title>{safe_title}</title>
   <style>
     :root {{
       color-scheme: light;
@@ -100,10 +123,22 @@ def build_html_report(markdown_text: str, title: str) -> str:
       padding: 2px 5px;
       border-radius: 4px;
     }}
+    .disclaimer {{
+      margin: 24px 0;
+      padding: 14px 16px;
+      border-left: 4px solid #b91c1c;
+      background: #fff7ed;
+      color: #7c2d12;
+      font-weight: 600;
+    }}
   </style>
 </head>
 <body>
   <main>
+    <div class="disclaimer">
+      Portfolio prototype only. Not legal, compliance, financial, investment, or
+      security certification advice.
+    </div>
     {body}
   </main>
 </body>
@@ -116,7 +151,7 @@ def generate_reports(
     result: AssessmentResult,
     output_root: Path | None = None,
 ) -> dict[str, Path]:
-    root = output_root or reports_dir()
+    root = reports_dir() if output_root is None else output_root / "reports"
     report_name = f"{workflow.id}_assessment"
     markdown_text = build_markdown_report(workflow, result)
     html_text = build_html_report(markdown_text, f"AgentGuard AI Assessment | {workflow.name}")

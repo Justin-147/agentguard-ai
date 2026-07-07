@@ -67,3 +67,86 @@ controls:
     mitigates:
       - model_risk
       - auditability_gap
+
+  regulated_records_control:
+    description: "Define controls for records that may be subject to regulated business processes."
+    mitigates:
+      - regulatory_risk
+      - data_privacy_risk
+
+  vendor_due_diligence:
+    description: "Review external providers for reliability, data handling, security posture, and operational dependency."
+    mitigates:
+      - third_party_risk
+      - cybersecurity_risk
+
+  third_party_contract_review:
+    description: "Document third-party responsibilities, data boundaries, incident handling, and service expectations."
+    mitigates:
+      - third_party_risk
+      - regulatory_risk
+
+  model_card:
+    description: "Maintain a model or system card describing intended use, limitations, evaluation results, and known risks."
+    mitigates:
+      - model_risk
+      - auditability_gap
+
+  data_lineage:
+    description: "Track data sources, transformations, outputs, and retention paths used by the agent workflow."
+    mitigates:
+      - data_privacy_risk
+      - regulatory_risk
+      - auditability_gap
+
+  embedding_store_access_control:
+    description: "Restrict and monitor access to vector stores or long-term memory containing sensitive content."
+    mitigates:
+      - data_privacy_risk
+      - cybersecurity_risk
+
+  output_sanitization:
+    description: "Sanitize generated outputs before display, storage, or external transmission."
+    mitigates:
+      - prompt_injection_risk
+      - data_privacy_risk
+      - cybersecurity_risk
+
+  content_safety_filter:
+    description: "Filter unsafe, malicious, or policy-violating inputs and outputs before tool execution."
+    mitigates:
+      - cybersecurity_risk
+      - prompt_injection_risk
+      - operational_risk
+
+  system_prompt_protection:
+    description: "Protect system instructions and tool policies from disclosure or untrusted override."
+    mitigates:
+      - prompt_injection_risk
+      - cybersecurity_risk
+
+  budget_and_rate_guardrail:
+    description: "Set budget, volume, and rate guardrails for automated actions and external API usage."
+    mitigates:
+      - operational_risk
+      - external_action_risk
+      - third_party_risk
+
+  human_escalation_path:
+    description: "Define named escalation routes for uncertain, high-impact, or failed agent actions."
+    mitigates:
+      - human_oversight_gap
+      - operational_risk
+
+  red_team_program:
+    description: "Run structured red-team exercises against prompt injection, tool misuse, data leakage, and unsafe outputs."
+    mitigates:
+      - model_risk
+      - prompt_injection_risk
+      - cybersecurity_risk
+
+  privacy_impact_assessment:
+    description: "Assess privacy impact for personal, financial, confidential, or regulated data in the workflow."
+    mitigates:
+      - data_privacy_risk
+      - regulatory_risk

@@ -1,58 +1,30 @@
 # AgentGuard AI
 
-AgentGuard AI is a local-first AI agent risk auditor. It evaluates structured descriptions of agent workflows, identifies tool-use, data, oversight, auditability, model, operational, and cybersecurity risks, and generates evidence-backed governance recommendations.
+[![tests](https://github.com/Justin-147/agentguard-ai/actions/workflows/tests.yml/badge.svg)](https://github.com/Justin-147/agentguard-ai/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml)
 
-It is designed as a recruitment-ready portfolio project for AI governance, model risk, operational risk, RegTech, financial services AI risk, and AI solution consulting roles.
+AgentGuard AI is a local-first AI agent risk auditor. It evaluates structured descriptions of agent workflows, identifies tool-use, data, oversight, auditability, model, operational, cybersecurity, regulatory, and third-party risks, and generates evidence-backed governance recommendations.
+
+V0.2 is deterministic, reproducible, and API-key-free. It adds workflow validation, config validation, rule IDs, framework references, score explanations, safer reports, CI, schema export, and a richer Streamlit dashboard.
 
 ## What It Does
 
-- Loads structured AI agent workflow descriptions from JSON.
+- Loads synthetic AI agent workflow descriptions from JSON.
 - Assesses tool permissions, external actions, sensitive data, human oversight, logging, memory, evaluation, and deployment controls.
-- Produces deterministic risk findings with severity, likelihood, evidence, scores, and recommended controls.
+- Produces deterministic risk findings with rule IDs, framework references, severity, likelihood, evidence, scores, and recommended controls.
 - Generates Markdown, HTML, and JSON assessment reports.
-- Provides a simple Streamlit dashboard for workflow comparison and finding review.
+- Validates workflow inputs and project configuration.
+- Provides a Streamlit dashboard with filters, comparison view, controls, framework mapping, raw JSON, and Markdown preview.
 - Runs fully offline without API keys.
 
 ## What It Does Not Do
 
 - It is not a SaaS product.
 - It does not include login, payment, or multi-user features.
-- It does not connect to real Gmail, Outlook, broker, trading, or customer systems.
+- It does not connect to real Gmail, Outlook, broker, trading, CRM, or customer systems.
 - It does not browse the web or process private customer data.
 - It does not provide legal, compliance, financial, investment, or security certification advice.
-
-## Target Job Relevance
-
-AgentGuard AI demonstrates:
-
-- AI governance and auditability thinking.
-- Agent workflow risk assessment.
-- Tool-use and permission risk analysis.
-- Operational resilience and incident-response control design.
-- Financial services and RegTech risk awareness.
-- Clear report generation for business and technical stakeholders.
-
-## Architecture
-
-```text
-config/
-  risk_taxonomy.yaml       Risk categories and keywords
-  control_library.yaml     Governance controls mapped to risks
-  demo_cases.yaml          Demo workflow index
-  report_template.md       Markdown report template
-
-src/agentguard/
-  models.py                Pydantic workflow and assessment models
-  assessment/              Rule engine, scoring, controls, reports
-  writers/                 Markdown, HTML, and JSON writers
-  dashboard/app.py         Streamlit dashboard
-  main.py                  CLI entrypoint
-
-examples/
-  workflows/               Demo workflow JSON files
-  sample_reports/          Curated sample Markdown reports
-  sample_outputs/          Curated sample JSON outputs
-```
 
 ## Quick Start
 
@@ -62,29 +34,29 @@ python -m pip install -e ".[dev]"
 python -m agentguard.main assess --case financial_advisor_copilot
 ```
 
-Expected CLI output:
+Reproducible output:
 
-```text
-json: reports/json/financial_advisor_copilot_assessment.json
-markdown: reports/markdown/financial_advisor_copilot_assessment.md
-html: reports/html/financial_advisor_copilot_assessment.html
-overall_risk_level: Medium
-overall_score: 0.49
+```powershell
+python -m agentguard.main assess --case financial_advisor_copilot --as-of 2026-07-06 --output-root .tmp/demo-output
 ```
 
 ## CLI Commands
 
-Assess a demo case:
-
 ```powershell
-python -m agentguard.main assess --case financial_advisor_copilot
-python -m agentguard.main assess --case high_risk_autonomous_agent
+python -m agentguard.main list-cases
+python -m agentguard.main validate
+python -m agentguard.main validate-workflow --input examples/workflows/high_risk_autonomous_agent.json
+python -m agentguard.main assess --case high_risk_autonomous_agent --as-of 2026-07-06 --output-root .tmp/demo-output
+python -m agentguard.main assess-all --as-of 2026-07-06 --output-root .tmp/demo-output
+python -m agentguard.main export-schema --output docs/workflow_schema.json
 ```
 
-Assess from an input file:
+Reports are written under:
 
-```powershell
-python -m agentguard.main assess --input examples/workflows/high_risk_autonomous_agent.json
+```text
+<output-root>/reports/json/
+<output-root>/reports/markdown/
+<output-root>/reports/html/
 ```
 
 ## Dashboard
@@ -93,27 +65,38 @@ python -m agentguard.main assess --input examples/workflows/high_risk_autonomous
 streamlit run src/agentguard/dashboard/app.py
 ```
 
-The dashboard includes a workflow selector, overall risk level, score, risk tag distribution, severity distribution, findings table, recommended controls, and rendered Markdown report.
+The dashboard includes case search, severity and risk tag filters, score threshold filtering, framework mapping, control descriptions, raw JSON preview, Markdown preview, and demo case comparison.
 
 ## Demo Cases
 
 - `financial_advisor_copilot`: Medium-risk wealth management assistant that handles personal and financial data but cannot trade or send messages.
-- `customer_support_email_agent`: Customer support workflow that can send outbound emails without every-action approval.
-- `market_intelligence_agent`: Low-to-medium-risk public-source research assistant.
-- `developer_code_agent`: Coding agent with file-write and command-execution permissions.
-- `high_risk_autonomous_agent`: Deliberately high-risk autonomous workflow with sensitive data, external actions, transactions, weak logging, and no approval gates.
+- `customer_support_email_agent`: High-risk support workflow that can send outbound emails without every-action approval.
+- `market_intelligence_agent`: Medium-risk public-source research assistant.
+- `developer_code_agent`: High-risk coding agent with file-write and command-execution permissions.
+- `high_risk_autonomous_agent`: Critical-risk autonomous workflow with sensitive data, external actions, transactions, weak logging, and no approval gates.
+
+## Documentation
+
+- [Methodology](docs/methodology.md)
+- [Workflow Schema](docs/workflow_schema.md)
+- [Risk Taxonomy](docs/risk_taxonomy.md)
+- [Control Library](docs/control_library.md)
+- [Framework Mapping](docs/framework_mapping.md)
+- [Safety Boundaries](docs/safety_boundaries.md)
+- [Roadmap](docs/roadmap.md)
 
 ## Sample Reports
 
-- [Financial Advisor Copilot Markdown](examples/sample_reports/financial_advisor_copilot_assessment.md)
-- [High Risk Autonomous Agent Markdown](examples/sample_reports/high_risk_autonomous_agent_assessment.md)
-- [Financial Advisor Copilot JSON](examples/sample_outputs/financial_advisor_copilot_assessment.json)
-- [High Risk Autonomous Agent JSON](examples/sample_outputs/high_risk_autonomous_agent_assessment.json)
+Curated sample Markdown reports live in [examples/sample_reports](examples/sample_reports), and JSON outputs live in [examples/sample_outputs](examples/sample_outputs).
 
 ## Tests
 
 ```powershell
+ruff check .
+python -m compileall src tests scripts
+mypy src/agentguard
 pytest
+python scripts/run_demo.py
 ```
 
 ## Disclaimer

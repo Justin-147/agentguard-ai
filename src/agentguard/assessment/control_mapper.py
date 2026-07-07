@@ -28,7 +28,13 @@ def attach_recommended_controls(
 ) -> list[RiskFinding]:
     enriched: list[RiskFinding] = []
     for finding in findings:
-        controls = controls_for_risk_tag(finding.risk_tag, library)
+        controls: list[str] = []
+        for control_id in [
+            *finding.recommended_controls,
+            *controls_for_risk_tag(finding.risk_tag, library),
+        ]:
+            if control_id not in controls:
+                controls.append(control_id)
         enriched.append(finding.model_copy(update={"recommended_controls": controls}))
     return enriched
 
@@ -37,6 +43,10 @@ def control_description(
     control_id: str, library: dict[str, Any] | None = None
 ) -> str:
     return _controls(library).get(control_id, {}).get("description", "")
+
+
+def control_descriptions_for_finding(finding: RiskFinding) -> list[str]:
+    return [control_description(control_id) for control_id in finding.recommended_controls]
 
 
 def unique_controls_from_findings(findings: Iterable[RiskFinding]) -> list[str]:
@@ -51,7 +61,7 @@ def unique_controls_from_findings(findings: Iterable[RiskFinding]) -> list[str]:
 def identify_control_gaps(
     workflow: AgentWorkflow, findings: Iterable[RiskFinding]
 ) -> list[str]:
-    gaps = unique_controls_from_findings(findings)
+    gaps: list[str] = []
 
     def add(control_id: str) -> None:
         if control_id not in gaps:
@@ -74,8 +84,21 @@ def identify_control_gaps(
     if not workflow.logging.tool_call_logging:
         add("tool_call_audit_log")
 
+    if (
+        workflow.logging.input_output_logging
+        and any(
+            access.sensitivity in {"personal", "financial", "regulated", "confidential"}
+            and not access.pii_redaction
+            for access in workflow.data_access
+        )
+    ):
+        add("output_sanitization")
+
     if not workflow.human_oversight.approval_required_for_high_risk_actions:
         add("human_approval_gate")
+
+    if not workflow.human_oversight.escalation_path_defined:
+        add("human_escalation_path")
 
     if not workflow.evaluation.prompt_injection_tests:
         add("prompt_injection_tests")
@@ -85,6 +108,9 @@ def identify_control_gaps(
         and workflow.evaluation.hallucination_tests
     ):
         add("evaluation_suite")
+
+    if not workflow.evaluation.red_team_testing:
+        add("red_team_program")
 
     if not workflow.evaluation.fallback_tests:
         add("fallback_procedure")
@@ -97,5 +123,16 @@ def identify_control_gaps(
 
     if not workflow.deployment.rate_limits:
         add("rate_limits")
+
+    if any(access.sensitivity == "regulated" for access in workflow.data_access):
+        add("regulated_records_control")
+
+    if any(tool.tool_type.lower() == "api" for tool in workflow.tools) or any(
+        action.action_type == "api_call" for action in workflow.external_actions
+    ):
+        add("vendor_due_diligence")
+
+    if workflow.memory.memory_type == "vector_store" and workflow.memory.contains_sensitive_data:
+        add("embedding_store_access_control")
 
     return gaps

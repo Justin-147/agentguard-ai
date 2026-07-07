@@ -8,6 +8,7 @@ def test_overall_score_is_between_zero_and_one():
 
     assert 0.0 <= result.overall_score <= 1.0
     assert all(0.0 <= finding.risk_score <= 1.0 for finding in result.findings)
+    assert "control_gap_density" in result.score_explanation
 
 
 def test_score_thresholds_match_expected_levels():

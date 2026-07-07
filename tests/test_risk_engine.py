@@ -34,3 +34,20 @@ def test_missing_tool_call_logging_triggers_auditability_gap():
 
 def test_missing_human_approval_triggers_human_oversight_gap():
     assert "human_oversight_gap" in _risk_tags("customer_support_email_agent")
+
+
+def test_findings_include_rule_ids_and_framework_refs():
+    result = assess_workflow(load_demo_workflow("high_risk_autonomous_agent"))
+
+    assert all(finding.rule_id.startswith("AG-RULE-") for finding in result.findings)
+    assert any(finding.framework_refs for finding in result.findings)
+
+
+def test_missing_red_team_testing_triggers_model_risk():
+    result = assess_workflow(load_demo_workflow("customer_support_email_agent"))
+
+    assert any(
+        finding.risk_tag == "model_risk"
+        and any("red-team" in evidence for evidence in finding.evidence)
+        for finding in result.findings
+    )

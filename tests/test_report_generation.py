@@ -14,8 +14,13 @@ def test_json_markdown_and_html_reports_are_generated(tmp_path):
     assert paths["json"].exists()
     assert paths["markdown"].exists()
     assert paths["html"].exists()
-    assert "AgentGuard AI Assessment" in paths["markdown"].read_text(encoding="utf-8")
-    assert "<html" in paths["html"].read_text(encoding="utf-8").lower()
+    markdown_text = paths["markdown"].read_text(encoding="utf-8")
+    html_text = paths["html"].read_text(encoding="utf-8")
+    assert "AgentGuard AI Assessment" in markdown_text
+    assert "Disclaimer" in markdown_text
+    assert "Risk Scoring Explanation" in markdown_text
+    assert "<html" in html_text.lower()
+    assert "Portfolio prototype only" in html_text
 
     payload = json.loads(paths["json"].read_text(encoding="utf-8"))
     assert payload["workflow_id"] == "financial_advisor_copilot"

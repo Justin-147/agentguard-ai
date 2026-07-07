@@ -44,6 +44,14 @@ def load_control_library() -> dict[str, Any]:
     return load_yaml(config_dir() / "control_library.yaml")
 
 
+def load_framework_mapping() -> dict[str, Any]:
+    return load_yaml(config_dir() / "framework_mapping.yaml")
+
+
+def load_rules() -> dict[str, Any]:
+    return load_yaml(config_dir() / "rules.yaml").get("rules", {})
+
+
 def load_demo_cases() -> dict[str, Any]:
     return load_yaml(config_dir() / "demo_cases.yaml").get("demo_cases", {})
 

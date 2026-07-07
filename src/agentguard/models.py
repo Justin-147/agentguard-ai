@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+import re
+from datetime import UTC, datetime
 from typing import ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class AgentGuardModel(BaseModel):
@@ -17,16 +18,30 @@ def _lower(value: str) -> str:
 
 
 class ToolSpec(AgentGuardModel):
-    name: str
-    tool_type: str
-    description: str
-    permissions: list[str]
+    name: str = Field(min_length=1)
+    tool_type: str = Field(min_length=1)
+    description: str = Field(min_length=1)
+    permissions: list[str] = Field(default_factory=list)
     can_read: bool = False
     can_write: bool = False
     can_execute: bool = False
     can_send_external_message: bool = False
     can_trigger_financial_action: bool = False
     requires_approval: bool = False
+
+    @model_validator(mode="after")
+    def validate_financial_tool_type(self) -> ToolSpec:
+        if self.can_trigger_financial_action and self.tool_type.lower() not in {
+            "transaction",
+            "payment",
+            "trading",
+            "api",
+        }:
+            raise ValueError(
+                "Tools that can trigger financial actions must use "
+                "transaction/payment/trading/api tool_type."
+            )
+        return self
 
 
 class DataAccessSpec(AgentGuardModel):
@@ -39,9 +54,9 @@ class DataAccessSpec(AgentGuardModel):
         "regulated",
     }
 
-    data_category: str
+    data_category: str = Field(min_length=1)
     sensitivity: str
-    purpose: str
+    purpose: str = Field(min_length=1)
     retention_policy_declared: bool
     pii_redaction: bool
     encryption_required: bool
@@ -58,8 +73,8 @@ class DataAccessSpec(AgentGuardModel):
 class ExternalActionSpec(AgentGuardModel):
     allowed_business_impacts: ClassVar[set[str]] = {"low", "medium", "high"}
 
-    action_type: str
-    description: str
+    action_type: str = Field(min_length=1)
+    description: str = Field(min_length=1)
     requires_human_approval: bool
     reversible: bool
     business_impact: str
@@ -100,7 +115,7 @@ class LoggingSpec(AgentGuardModel):
     tool_call_logging: bool
     input_output_logging: bool
     decision_trace: bool
-    retention_days: int | None
+    retention_days: int | None = Field(default=None, ge=0)
     audit_export_available: bool
 
 
@@ -127,6 +142,14 @@ class MemorySpec(AgentGuardModel):
         if normalized not in cls.allowed_memory_types:
             raise ValueError(f"Unsupported memory type: {value}")
         return normalized
+
+    @model_validator(mode="after")
+    def validate_memory_consistency(self) -> MemorySpec:
+        if not self.uses_memory and self.memory_type not in {None, "none"}:
+            raise ValueError("memory_type must be 'none' or null when uses_memory is false.")
+        if not self.uses_memory and self.contains_sensitive_data:
+            raise ValueError("contains_sensitive_data cannot be true when uses_memory is false.")
+        return self
 
 
 class EvaluationSpec(AgentGuardModel):
@@ -162,11 +185,11 @@ class DeploymentSpec(AgentGuardModel):
 
 
 class AgentWorkflow(AgentGuardModel):
-    id: str
-    name: str
-    description: str
-    business_domain: str
-    agent_type: str
+    id: str = Field(min_length=1)
+    name: str = Field(min_length=1)
+    description: str = Field(min_length=1)
+    business_domain: str = Field(min_length=1)
+    agent_type: str = Field(min_length=1)
     tools: list[ToolSpec]
     data_access: list[DataAccessSpec]
     external_actions: list[ExternalActionSpec]
@@ -176,21 +199,39 @@ class AgentWorkflow(AgentGuardModel):
     evaluation: EvaluationSpec
     deployment: DeploymentSpec
 
+    @field_validator("id")
+    @classmethod
+    def validate_id(cls, value: str) -> str:
+        if not re.fullmatch(r"[a-zA-Z0-9_-]+", value):
+            raise ValueError(
+                "Workflow id may only contain letters, numbers, underscores, and hyphens."
+            )
+        return value
+
+    @model_validator(mode="after")
+    def validate_unique_tool_names(self) -> AgentWorkflow:
+        names = [tool.name for tool in self.tools]
+        if len(names) != len(set(names)):
+            raise ValueError("Tool names must be unique.")
+        return self
+
 
 class RiskFinding(AgentGuardModel):
     allowed_severities: ClassVar[set[str]] = {"low", "medium", "high", "critical"}
     allowed_likelihoods: ClassVar[set[str]] = {"low", "medium", "high"}
 
     id: str
+    rule_id: str
     risk_tag: str
-    title: str
-    description: str
+    title: str = Field(min_length=1)
+    description: str = Field(min_length=1)
     severity: str
     likelihood: str
     risk_score: float = Field(ge=0.0, le=1.0)
-    affected_component: str
-    evidence: list[str]
-    recommended_controls: list[str]
+    affected_component: str = Field(min_length=1)
+    evidence: list[str] = Field(default_factory=list)
+    recommended_controls: list[str] = Field(default_factory=list)
+    framework_refs: list[str] = Field(default_factory=list)
 
     @field_validator("severity")
     @classmethod
@@ -218,4 +259,5 @@ class AssessmentResult(AgentGuardModel):
     control_gaps: list[str]
     strengths: list[str]
     recommendations: list[str]
-    generated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    score_explanation: dict[str, float | str] = Field(default_factory=dict)
+    generated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
