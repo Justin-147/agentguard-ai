@@ -1,7 +1,7 @@
 import json
 
 from agentguard.assessment.normalize import load_demo_workflow
-from agentguard.assessment.report_builder import generate_reports
+from agentguard.assessment.report_builder import build_html_report, generate_reports
 from agentguard.assessment.risk_engine import assess_workflow
 
 
@@ -25,3 +25,15 @@ def test_json_markdown_and_html_reports_are_generated(tmp_path):
     payload = json.loads(paths["json"].read_text(encoding="utf-8"))
     assert payload["workflow_id"] == "financial_advisor_copilot"
     assert payload["overall_risk_level"] == result.overall_risk_level
+
+
+def test_html_report_keeps_disclaimer_and_escapes_title():
+    html = build_html_report(
+        "# Demo\n\n| A | B |\n|---|---|\n| x | y |",
+        "Bad <script>alert(1)</script>",
+    )
+
+    assert "<script>" not in html
+    assert "Bad &lt;script&gt;alert(1)&lt;/script&gt;" in html
+    assert "Portfolio prototype only" in html
+    assert "<table>" in html or "<table" in html

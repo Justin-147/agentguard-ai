@@ -6,7 +6,9 @@ import subprocess
 import sys
 
 COMMANDS = [
-    [sys.executable, "-m", "compileall", "src", "tests"],
+    [sys.executable, "-m", "ruff", "check", "."],
+    [sys.executable, "-m", "compileall", "src", "tests", "scripts"],
+    [sys.executable, "-m", "mypy", "src/agentguard"],
     [sys.executable, "-m", "pytest"],
     [sys.executable, "-m", "agentguard.main", "validate"],
     [
@@ -40,6 +42,7 @@ COMMANDS = [
         "--output-root",
         ".tmp/demo",
     ],
+    [sys.executable, "-m", "build"],
 ]
 
 
