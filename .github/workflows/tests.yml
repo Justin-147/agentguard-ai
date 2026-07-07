@@ -27,6 +27,9 @@ jobs:
       - name: Ruff
         run: ruff check .
 
+      - name: Verify line endings
+        run: python scripts/verify_line_endings.py
+
       - name: Compile
         run: python -m compileall src tests scripts
 

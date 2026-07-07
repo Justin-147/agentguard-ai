@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0
+## 0.2.0 - 2026-07-07
 
 - Added reproducible `--as-of` timestamps and `--output-root`.
 - Added workflow and configuration validation commands.

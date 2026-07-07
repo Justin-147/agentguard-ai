@@ -7,6 +7,7 @@ import sys
 
 COMMANDS = [
     [sys.executable, "-m", "ruff", "check", "."],
+    [sys.executable, "scripts/verify_line_endings.py"],
     [sys.executable, "-m", "compileall", "src", "tests", "scripts"],
     [sys.executable, "-m", "mypy", "src/agentguard"],
     [sys.executable, "-m", "pytest"],

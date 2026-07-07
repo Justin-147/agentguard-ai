@@ -68,7 +68,8 @@ def build_markdown_report(workflow: AgentWorkflow, result: AssessmentResult) -> 
 
 def build_html_report(markdown_text: str, title: str) -> str:
     safe_title = html.escape(title, quote=True)
-    body = markdown_lib.markdown(markdown_text, extensions=["tables", "toc"])
+    safe_markdown_text = html.escape(markdown_text, quote=False)
+    body = markdown_lib.markdown(safe_markdown_text, extensions=["tables", "toc"])
     return f"""<!doctype html>
 <html lang="en">
 <head>

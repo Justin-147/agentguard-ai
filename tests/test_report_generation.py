@@ -37,3 +37,14 @@ def test_html_report_keeps_disclaimer_and_escapes_title():
     assert "Bad &lt;script&gt;alert(1)&lt;/script&gt;" in html
     assert "Portfolio prototype only" in html
     assert "<table>" in html or "<table" in html
+
+
+def test_html_report_does_not_render_raw_script_from_body():
+    html = build_html_report(
+        "# Demo\n\n<script>alert(1)</script>\n\n| A | B |\n|---|---|\n| x | y |",
+        "Safe Title",
+    )
+
+    assert "<script>" not in html
+    assert "&lt;script&gt;" in html or "&amp;lt;script&amp;gt;" in html
+    assert "Portfolio prototype only" in html
